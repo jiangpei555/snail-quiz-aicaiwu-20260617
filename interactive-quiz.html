@@ -41,7 +41,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
 .screen.active{display:flex}
 
 /* Start Screen */
-.start-screen{align-items:center;justify-content:center;padding:24px;text-align:center;min-height:calc(100vh - 56px)}
+.start-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;min-height:calc(100vh - 56px)}
 .start-card{background:var(--card-white);border-radius:var(--radius);padding:40px 32px;max-width:420px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.06)}
 .start-card h1{font-size:22px;font-weight:700;margin-bottom:8px;color:var(--text-primary)}
 .start-card .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:24px;line-height:1.6}
@@ -97,7 +97,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
 .btn-next:hover{transform:translateY(-2px)}
 
 /* Result Screen */
-.result-screen{align-items:center;justify-content:center;padding:24px;text-align:center;min-height:calc(100vh - 56px)}
+.result-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;min-height:calc(100vh - 56px)}
 .result-card{background:var(--card-white);border-radius:var(--radius);padding:40px 28px;max-width:420px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.06)}
 .score-ring{width:140px;height:140px;margin:0 auto 20px;position:relative}
 .score-ring svg{transform:rotate(-90deg)}
