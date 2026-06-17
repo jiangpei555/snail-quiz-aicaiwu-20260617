@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>蜗牛AI学习互动 - AI财务系统调试与线下活动筹备</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-cream:#FFF8F2;--bg-warm:#FFF5EB;--card-white:#FFFFFF;
+  --text-primary:#2D2B32;--text-secondary:#6B6678;--text-muted:#9E99AA;
+  --accent-pink:#FF8FAB;--accent-mint:#6EE7B7;--accent-sky:#7DD3FC;
+  --accent-lavender:#C4B5FD;--accent-peach:#FCA5A5;--accent-yellow:#FDE68A;
+  --accent-coral:#FDA4AF;--green:#34D399;--red:#FB7185;
+  --radius:24px;--radius-sm:16px;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC",sans-serif;
+}
+html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--bg-cream);color:var(--text-primary)}
+
+.brand-bar{display:flex;align-items:center;justify-content:center;padding:10px 16px;background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,0,0,0.04);z-index:200;flex-shrink:0;position:relative}
+.brand-bar .brand-logo{height:36px;width:auto}
+
+.snail-bg-1{background:linear-gradient(135deg,#FFF0F5,#FFE4EC)}
+.snail-bg-2{background:linear-gradient(135deg,#F0FFF4,#E6FFE6)}
+.snail-bg-3{background:linear-gradient(135deg,#F0F8FF,#E6F2FF)}
+.snail-bg-4{background:linear-gradient(135deg,#F8F0FF,#F0E6FF)}
+.snail-bg-5{background:linear-gradient(135deg,#FFF5F0,#FFEEE6)}
+.snail-bg-6{background:linear-gradient(135deg,#FFFCF0,#FFF8E6)}
+.snail-bg-7{background:linear-gradient(135deg,#FFF0F0,#FFE8E8)}
+.snail-bg-8{background:linear-gradient(135deg,#F0FFF5,#E6FFEE)}
+.snail-bg-9{background:linear-gradient(135deg,#F8F0FF,#F3E8FF)}
+.snail-bg-10{background:linear-gradient(135deg,#FFF0F5,#FFE8F0)}
+.snail-bg-11{background:linear-gradient(135deg,#F0FFFF,#E6FAFA)}
+.snail-bg-12{background:linear-gradient(135deg,#FFFDF5,#FFF8EE)}
+.snail-bg-13{background:linear-gradient(135deg,#FFF0F3,#FFEAEF)}
+.snail-bg-14{background:linear-gradient(135deg,#FFFCF0,#FFF5E6)}
+.snail-bg-15{background:linear-gradient(135deg,#F8F0FF,#F5EAFF)}
+
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.screen{display:none;flex-direction:column;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.screen.active{display:flex}
+
+/* Start Screen */
+.start-screen{align-items:center;justify-content:center;padding:24px;text-align:center;min-height:calc(100vh - 56px)}
+.start-card{background:var(--card-white);border-radius:var(--radius);padding:40px 32px;max-width:420px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.06)}
+.start-card h1{font-size:22px;font-weight:700;margin-bottom:8px;color:var(--text-primary)}
+.start-card .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:24px;line-height:1.6}
+.start-card .meta{display:flex;justify-content:center;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+.start-card .meta-item{font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:4px}
+.start-card .meta-item span{color:var(--text-secondary);font-weight:600}
+.btn-start{background:linear-gradient(135deg,var(--accent-pink),#FF6B8A);color:#fff;border:none;padding:14px 48px;border-radius:50px;font-size:16px;font-weight:600;cursor:pointer;transition:transform .2s,box-shadow .2s;font-family:var(--font)}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,143,171,0.4)}
+.btn-start:active{transform:translateY(0)}
+
+/* Quiz Screen */
+.quiz-screen{min-height:calc(100vh - 56px);position:relative}
+.progress-wrap{padding:12px 20px 0;flex-shrink:0}
+.progress-bar{height:6px;background:rgba(0,0,0,0.06);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-pink),#FF6B8A);border-radius:3px;transition:width .4s ease;width:0}
+.progress-text{text-align:center;font-size:12px;color:var(--text-muted);margin-top:6px}
+
+.question-area{flex:1;display:flex;flex-direction:column;align-items:center;padding:16px 20px 24px;overflow-y:auto}
+.question-card{background:var(--card-white);border-radius:var(--radius);padding:28px 24px;max-width:520px;width:100%;box-shadow:0 4px 20px rgba(0,0,0,0.05);margin-bottom:16px;animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+.module-badge{display:inline-block;padding:4px 12px;border-radius:50px;font-size:12px;font-weight:600;margin-bottom:12px}
+.badge-m1{background:#FFE4EC;color:#E85580}
+.badge-m2{background:#E6FFE6;color:#22A06B}
+.badge-m3{background:#E6F2FF;color:#3B82F6}
+.badge-m4{background:#F0E6FF;color:#7C3AED}
+.badge-m5{background:#FFF5E6;color:#D97706}
+
+.contact-row{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.contact-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.contact-info{display:flex;flex-direction:column}
+.contact-name{font-size:14px;font-weight:600;color:var(--text-primary)}
+.contact-role{font-size:11px;color:var(--text-muted)}
+
+.question-text{font-size:17px;font-weight:600;line-height:1.6;color:var(--text-primary);margin-bottom:20px}
+
+.options{display:flex;flex-direction:column;gap:10px}
+.option-btn{background:var(--bg-warm);border:2px solid transparent;border-radius:var(--radius-sm);padding:14px 16px;font-size:15px;cursor:pointer;text-align:left;transition:all .2s;font-family:var(--font);color:var(--text-primary);line-height:1.5}
+.option-btn:hover{border-color:var(--accent-pink);background:#FFF0F5}
+.option-btn.selected{border-color:var(--accent-pink);background:#FFF0F5}
+.option-btn.correct{border-color:var(--green);background:#F0FFF4;color:#065F46}
+.option-btn.wrong{border-color:var(--red);background:#FFF0F0;color:#9F1239}
+.option-btn.disabled{pointer-events:none;opacity:0.7}
+
+.explanation-box{background:#FFFCF5;border:1px solid #FDE68A;border-radius:var(--radius-sm);padding:16px;margin-top:16px;animation:slideIn .3s ease;display:none}
+.explanation-box.show{display:block}
+.explanation-box .exp-title{font-size:13px;font-weight:700;color:#B45309;margin-bottom:6px}
+.explanation-box .exp-body{font-size:14px;color:#78350F;line-height:1.6}
+.explanation-box .knowledge-tag{display:inline-block;background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:50px;font-size:11px;font-weight:600;margin-top:8px}
+
+.btn-next{background:linear-gradient(135deg,var(--accent-pink),#FF6B8A);color:#fff;border:none;padding:12px 36px;border-radius:50px;font-size:15px;font-weight:600;cursor:pointer;margin-top:16px;transition:transform .2s;font-family:var(--font);display:none}
+.btn-next.show{display:inline-block}
+.btn-next:hover{transform:translateY(-2px)}
+
+/* Result Screen */
+.result-screen{align-items:center;justify-content:center;padding:24px;text-align:center;min-height:calc(100vh - 56px)}
+.result-card{background:var(--card-white);border-radius:var(--radius);padding:40px 28px;max-width:420px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.06)}
+.score-ring{width:140px;height:140px;margin:0 auto 20px;position:relative}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring .ring-bg{fill:none;stroke:rgba(0,0,0,0.06);stroke-width:8}
+.score-ring .ring-fill{fill:none;stroke:var(--accent-pink);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s ease}
+.score-number{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:36px;font-weight:800;color:var(--text-primary)}
+.score-label{font-size:13px;color:var(--text-muted);margin-top:-4px}
+.result-title{font-size:20px;font-weight:700;margin-bottom:8px}
+.result-desc{font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px}
+
+.review-list{width:100%;max-width:520px;margin-top:20px;text-align:left}
+.review-item{background:var(--card-white);border-radius:var(--radius-sm);padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.review-item .ri-q{font-size:14px;font-weight:600;margin-bottom:6px;color:var(--text-primary)}
+.review-item .ri-status{display:inline-block;padding:2px 8px;border-radius:50px;font-size:11px;font-weight:600}
+.ri-correct{background:#F0FFF4;color:#065F46}
+.ri-wrong{background:#FFF0F0;color:#9F1239}
+.review-item .ri-answer{font-size:13px;color:var(--text-secondary);margin-top:4px}
+
+.btn-retry{background:linear-gradient(135deg,var(--accent-pink),#FF6B8A);color:#fff;border:none;padding:14px 48px;border-radius:50px;font-size:16px;font-weight:600;cursor:pointer;transition:transform .2s;font-family:var(--font);margin-top:16px}
+.btn-retry:hover{transform:translateY(-2px)}
+
+.btn-review{background:var(--card-white);color:var(--text-primary);border:2px solid rgba(0,0,0,0.1);padding:12px 36px;border-radius:50px;font-size:15px;font-weight:600;cursor:pointer;margin-top:10px;transition:all .2s;font-family:var(--font)}
+.btn-review:hover{border-color:var(--accent-pink);color:var(--accent-pink)}
+
+@media(max-width:480px){
+  .brand-bar .brand-logo{height:28px}
+  .start-card{padding:28px 20px}
+  .start-card h1{font-size:19px}
+  .question-card{padding:20px 16px}
+  .question-text{font-size:15px}
+  .option-btn{font-size:14px;padding:12px 14px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand-bar" id="brandBar">
+    <img src="logo.png" alt="蜗牛AI Snail AI" class="brand-logo">
+  </div>
+
+  <!-- Start Screen -->
+  <div class="screen active snail-bg-1" id="startScreen">
+    <div class="start-screen">
+      <div class="start-card">
+        <h1>AI财务系统调试与线下活动筹备</h1>
+        <p class="subtitle">基于6月研讨会内容，测试你对AI财务系统逻辑与线下活动执行方案的理解</p>
+        <div class="meta">
+          <div class="meta-item">共 <span>15</span> 题</div>
+          <div class="meta-item"><span>5</span> 个模块</div>
+          <div class="meta-item"><span>7</span> 位参会人</div>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">开始答题</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz Screen -->
+  <div class="screen" id="quizScreen">
+    <div class="quiz-screen" id="quizBg">
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-text" id="progressText">1 / 15</div>
+      </div>
+      <div class="question-area">
+        <div class="question-card" id="questionCard">
+          <div class="module-badge" id="moduleBadge"></div>
+          <div class="contact-row" id="contactRow">
+            <div class="contact-avatar" id="contactAvatar"></div>
+            <div class="contact-info">
+              <div class="contact-name" id="contactName"></div>
+              <div class="contact-role" id="contactRole"></div>
+            </div>
+          </div>
+          <div class="question-text" id="questionText"></div>
+          <div class="options" id="optionsContainer"></div>
+          <div class="explanation-box" id="explanationBox">
+            <div class="exp-title">解析</div>
+            <div class="exp-body" id="explanationBody"></div>
+            <div class="knowledge-tag" id="knowledgeTag"></div>
+          </div>
+        </div>
+        <button class="btn-next" id="btnNext" onclick="nextQuestion()">下一题</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result Screen -->
+  <div class="screen" id="resultScreen">
+    <div class="result-screen snail-bg-1">
+      <div class="result-card">
+        <div class="score-ring">
+          <svg width="140" height="140" viewBox="0 0 140 140">
+            <circle class="ring-bg" cx="70" cy="70" r="58"/>
+            <circle class="ring-fill" id="ringFill" cx="70" cy="70" r="58" stroke-dasharray="364.42" stroke-dashoffset="364.42"/>
+          </svg>
+          <div class="score-number" id="scoreNumber">0</div>
+        </div>
+        <div class="score-label">正确率</div>
+        <div class="result-title" id="resultTitle"></div>
+        <div class="result-desc" id="resultDesc"></div>
+        <button class="btn-retry" onclick="retryQuiz()">再来一次</button>
+        <button class="btn-review" id="btnReviewToggle" onclick="toggleReview()">查看错题</button>
+      </div>
+      <div class="review-list" id="reviewList" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== QUIZ DATA =====
+const modules = [
+  {
+    id: 1, title: 'AI财务系统核心逻辑', subtitle: '业务流程与架构理解', badgeClass: 'badge-m1',
+    questions: [
+      {
+        id: 1,
+        contact: { name: 'JasonXie', initial: 'J', role: '系统演示', color: '#FF6B8A' },
+        text: 'AI财务系统的核心业务流程是什么？',
+        correctText: '记录账单 → 供应商付款 → 银行流水匹配',
+        distractors: ['记录账单 → 银行流水匹配 → 供应商付款', '供应商付款 → 记录账单 → 银行流水匹配', '银行流水匹配 → 记录账单 → 供应商付款'],
+        explanation: '会议明确指出AI财务系统的核心业务流程为"记录账单 → 供应商付款 → 银行流水匹配"，三者顺序不可颠倒，反映了真实的财务处理链路。',
+        knowledge: '核心业务流程'
+      },
+      {
+        id: 2,
+        contact: { name: 'ZRR', initial: 'Z', role: '架构讨论', color: '#7C3AED' },
+        text: '架构演示中，主讲人应参会人要求做了什么？',
+        correctText: '重新展示系统架构图，详细解释数据流转的边界逻辑',
+        distractors: ['直接跳过架构进入操作演示', '仅展示了系统截图未做解释', '重新编写了架构文档'],
+        explanation: '应参会人要求，主讲人重新展示了系统架构图，并详细解释了数据流转的边界逻辑，确保参会人准确理解系统边界。',
+        knowledge: '架构理解'
+      },
+      {
+        id: 3,
+        contact: { name: 'RobinMacMini', initial: 'R', role: '流程验证', color: '#3B82F6' },
+        text: '基础流程跑通确认了什么？',
+        correctText: '从新建账单到记录供应商付款的步骤已成功执行',
+        distractors: ['银行对账模块已完全自动化', '所有业务流程无需人工介入', '系统已实现全链路自动化'],
+        explanation: '通过现场演示确认了从新建账单到记录供应商付款的步骤已成功执行，但银行对账环节仍有卡点，尚未实现全链路自动化。',
+        knowledge: '流程验证'
+      }
+    ]
+  },
+  {
+    id: 2, title: '自动化匹配机制', subtitle: '银行对账与全链路目标', badgeClass: 'badge-m2',
+    questions: [
+      {
+        id: 4,
+        contact: { name: 'sean电脑', initial: 'S', role: '技术测试', color: '#059669' },
+        text: '银行对账模块的卡点问题是什么？',
+        correctText: '银行交易记录未能与供应商付款记录自动关联',
+        distractors: ['供应商付款无法新建', '银行流水导入失败', '账单创建报错'],
+        explanation: '发现系统在处理银行交易记录时，未能完全实现与供应商付款记录的自动关联，导致仍需人工介入核对，这是当前自动化的主要瓶颈。',
+        knowledge: '匹配卡点'
+      },
+      {
+        id: 5,
+        contact: { name: '罗斌Robin', initial: '罗', role: '方案制定', color: '#D97706' },
+        text: '针对银行匹配问题，制定的解决方案是什么？',
+        correctText: '由技术负责人修复Menu弹出无反应及银行匹配流程断裂问题',
+        distractors: ['暂时使用人工核对代替自动化', '更换银行数据接口供应商', '放弃银行匹配功能'],
+        explanation: '决定由技术负责人继续修复"Menu弹出无反应"及"银行匹配流程断裂"的问题，目标是彻底解决而非用临时方案替代。',
+        knowledge: '解决方案'
+      },
+      {
+        id: 6,
+        contact: { name: 'JasonXie', initial: 'J', role: '目标确认', color: '#FF6B8A' },
+        text: '自动化匹配的最终目标是什么？',
+        correctText: '实现全链路自动化',
+        distractors: ['仅完成账单自动录入', '实现半自动半人工模式', '仅匹配银行交易记录'],
+        explanation: '解决方案的最终目标是直至实现全链路自动化，即从记录账单到银行流水匹配的整个过程无需人工介入。',
+        knowledge: '目标规划'
+      }
+    ]
+  },
+  {
+    id: 3, title: '线下活动规划', subtitle: '6月20日分享会定位与议程', badgeClass: 'badge-m3',
+    questions: [
+      {
+        id: 7,
+        contact: { name: '蒋培', initial: '蒋', role: '线上班主任', color: '#E85580' },
+        text: '6月20日线下分享会的核心目标是什么？',
+        correctText: '构建澳洲华人AI爱好者圈子，三个月内进化出10名AI应用高手',
+        distractors: ['推广财务系统产品', '举办纯社交聚会', '招募50名付费学员'],
+        explanation: '活动核心目标明确：构建澳洲华人AI爱好者圈子，并在三个月内进化出10名AI应用高手，而非单纯的产品推广或社交。',
+        knowledge: '活动定位'
+      },
+      {
+        id: 8,
+        contact: { name: 'Renee', initial: 'R', role: '签到管理', color: '#F472B6' },
+        text: '活动的转化路径设计是什么？',
+        correctText: '公海流量 → 意向用户 → 付费学员的三级漏斗转化',
+        distractors: ['直接向所有人推销课程', '先免费再逐步收费', '仅关注现场报名转化'],
+        explanation: '通过高价值内容分享激发兴趣，在情绪高点直接引导报名，实现从公海流量到意向用户再到付费学员的三级漏斗转化。',
+        knowledge: '转化策略'
+      },
+      {
+        id: 9,
+        contact: { name: '彭总', initial: '彭', role: '现场接待', color: '#6366F1' },
+        text: '议程调整中，"课程介绍与转化引导"环节被调整到什么位置？',
+        correctText: '提前至中场休息前',
+        distractors: ['移至活动最后', '放在开场环节', '取消该环节'],
+        explanation: '为抓住听众兴奋点，决定将原定于后半段的"课程介绍与转化引导"环节提前至中场休息前，采用"快马加鞭"策略直接推课。',
+        knowledge: '议程调整'
+      }
+    ]
+  },
+  {
+    id: 4, title: '会务执行分工', subtitle: '物料准备与人员矩阵', badgeClass: 'badge-m4',
+    questions: [
+      {
+        id: 10,
+        contact: { name: 'Michael', initial: 'M', role: '技术支持', color: '#7C3AED' },
+        text: '线上班主任和线下班主任分别由谁担任？',
+        correctText: '线上班主任蒋培，线下班主任吴清',
+        distractors: ['线上班主任吴清，线下班主任蒋培', '线上班主任Michael，线下班主任Renee', '线上班主任JasonXie，线下班主任彭总'],
+        explanation: '人员分工矩阵明确：线上班主任由蒋培担任，线下班主任由吴清担任，职责清晰分离。',
+        knowledge: '人员分工'
+      },
+      {
+        id: 11,
+        contact: { name: '罗斌Robin', initial: '罗', role: '会务协调', color: '#D97706' },
+        text: 'Michael需要负责哪些工作？',
+        correctText: '易拉宝/签到表打印、设备搬运、现场网络/投影仪/直播调试',
+        distractors: ['仅负责签到管理', '仅负责现场拍照', '仅负责VIP引导'],
+        explanation: 'Michael的职责范围广泛：易拉宝制作、签到表、贵宾席名单打印；设备搬运；以及现场网络、投影仪、直播设备调试和Room账号登录管理。',
+        knowledge: '岗位职责'
+      },
+      {
+        id: 12,
+        contact: { name: 'RobinMacMini', initial: 'R', role: '场地联调', color: '#3B82F6' },
+        text: '设备联调的时间安排是什么？',
+        correctText: '6月17日上午取设备，下午14:00前往场地联调',
+        distractors: ['活动当天提前1小时调试', '6月19日统一调试', '6月16日完成所有调试'],
+        explanation: 'Michael需在6月17日上午前往办公室取音箱、麦克风及长线插线板，并于下午14:00送至现场进行联合调试，提前3天确保设备就绪。',
+        knowledge: '时间节点'
+      }
+    ]
+  },
+  {
+    id: 5, title: '营销转化与交付', subtitle: '引流策略与质量管控', badgeClass: 'badge-m5',
+    questions: [
+      {
+        id: 13,
+        contact: { name: 'JasonXie', initial: 'J', role: '素材制作', color: '#FF6B8A' },
+        text: '活动当天朋友圈预热的统一发布时间是？',
+        correctText: '13:50',
+        distractors: ['13:00', '13:30', '14:00'],
+        explanation: '全员需在13:50发布带有直播链接的朋友圈，配合现场照片素材进行造势。注意直播预热在13:45开启，朋友圈在13:50同步跟进。',
+        knowledge: '营销节奏'
+      },
+      {
+        id: 14,
+        contact: { name: 'sean电脑', initial: 'S', role: '转化测试', color: '#059669' },
+        text: '付款跳转的话术统一设置为什么？',
+        correctText: '添加蜗牛AI助理微信，发送截图后拉入正式学员群',
+        distractors: ['直接点击链接完成支付', '扫描二维码自动跳转支付', '联系课程顾问线下缴费'],
+        explanation: '由于支付接口限制无法自动跳转二维码，统一设置话术为"添加蜗牛AI助理微信，发送截图后拉入正式学员群"，确保转化路径清晰可控。',
+        knowledge: '转化话术'
+      },
+      {
+        id: 15,
+        contact: { name: 'ZRR', initial: 'Z', role: '跟进管理', color: '#7C3AED' },
+        text: '对未成交意向客户的回访截止日期是？',
+        correctText: '6月25日前',
+        distractors: ['活动当天', '6月20日前', '6月30日前'],
+        explanation: '明确要求在活动结束后（6月25日前）对未成交但有意向的客户进行电话回访，确保不流失潜在学员。',
+        knowledge: '跟进机制'
+      }
+    ]
+  }
+];
+
+// ===== STATE =====
+let shuffledQuestions = [];
+let currentIndex = 0;
+let score = 0;
+let answered = false;
+let userAnswers = [];
+
+// ===== UTILS =====
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildShuffledQuestion(q) {
+  const allOptions = [q.correctText, ...shuffleArray(q.distractors)];
+  const shuffled = shuffleArray(allOptions);
+  const correctIndex = shuffled.indexOf(q.correctText);
+  return { ...q, options: shuffled, answer: correctIndex };
+}
+
+// ===== LOGIC =====
+function startQuiz() {
+  shuffledQuestions = [];
+  modules.forEach(m => {
+    m.questions.forEach(q => {
+      shuffledQuestions.push({
+        ...buildShuffledQuestion(q),
+        moduleId: m.id,
+        moduleTitle: m.title,
+        moduleSubtitle: m.subtitle,
+        badgeClass: m.badgeClass
+      });
+    });
+  });
+  shuffledQuestions = shuffleArray(shuffledQuestions);
+  currentIndex = 0;
+  score = 0;
+  userAnswers = [];
+  showScreen('quizScreen');
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function renderQuestion() {
+  const q = shuffledQuestions[currentIndex];
+  answered = false;
+
+  // Background
+  const quizBg = document.getElementById('quizBg');
+  quizBg.className = 'quiz-screen snail-bg-' + q.id;
+
+  // Progress
+  const pct = ((currentIndex) / shuffledQuestions.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = (currentIndex + 1) + ' / ' + shuffledQuestions.length;
+
+  // Module badge
+  const badge = document.getElementById('moduleBadge');
+  badge.textContent = q.moduleTitle;
+  badge.className = 'module-badge ' + q.badgeClass;
+
+  // Contact
+  document.getElementById('contactAvatar').textContent = q.contact.initial;
+  document.getElementById('contactAvatar').style.background = q.contact.color;
+  document.getElementById('contactName').textContent = q.contact.name;
+  document.getElementById('contactRole').textContent = q.contact.role;
+
+  // Question
+  document.getElementById('questionText').textContent = q.text;
+
+  // Options
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = String.fromCharCode(65 + i) + '. ' + opt;
+    btn.onclick = () => selectOption(i);
+    container.appendChild(btn);
+  });
+
+  // Hide explanation & next
+  document.getElementById('explanationBox').classList.remove('show');
+  document.getElementById('btnNext').classList.remove('show');
+
+  // Animate card
+  const card = document.getElementById('questionCard');
+  card.style.animation = 'none';
+  card.offsetHeight;
+  card.style.animation = 'slideIn .3s ease';
+}
+
+function selectOption(idx) {
+  if (answered) return;
+  answered = true;
+
+  const q = shuffledQuestions[currentIndex];
+  const isCorrect = idx === q.answer;
+  if (isCorrect) score++;
+
+  userAnswers.push({ question: q, selectedIndex: idx, isCorrect });
+
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    if (i === q.answer) btn.classList.add('correct');
+    if (i === idx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  // Show explanation
+  document.getElementById('explanationBody').textContent = q.explanation;
+  document.getElementById('knowledgeTag').textContent = q.knowledge;
+  document.getElementById('explanationBox').classList.add('show');
+
+  // Show next
+  const btnNext = document.getElementById('btnNext');
+  btnNext.textContent = currentIndex < shuffledQuestions.length - 1 ? '下一题' : '查看结果';
+  btnNext.classList.add('show');
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex >= shuffledQuestions.length) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  showScreen('resultScreen');
+  const pct = Math.round((score / shuffledQuestions.length) * 100);
+
+  // Animate ring
+  const circumference = 2 * Math.PI * 58;
+  const offset = circumference - (pct / 100) * circumference;
+  const ring = document.getElementById('ringFill');
+  ring.style.strokeDashoffset = circumference;
+  setTimeout(() => { ring.style.strokeDashoffset = offset; }, 100);
+
+  // Score number
+  document.getElementById('scoreNumber').textContent = pct + '%';
+
+  // Title & desc
+  let title, desc;
+  if (pct >= 90) { title = '学霸级表现！'; desc = '你对本次研讨会内容掌握非常扎实，可以给别人当讲师了！'; }
+  else if (pct >= 70) { title = '掌握良好！'; desc = '核心知识点都已掌握，个别细节可以再回顾一下会议纪要。'; }
+  else if (pct >= 50) { title = '继续加油！'; desc = '部分内容还需要巩固，建议重新阅读会议摘要重点标注的部分。'; }
+  else { title = '需要复习！'; desc = '对会议内容的理解还有较大提升空间，建议完整回顾一次会议记录。'; }
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultDesc').textContent = '答对 ' + score + ' / ' + shuffledQuestions.length + ' 题。' + desc;
+
+  // Review list
+  const reviewList = document.getElementById('reviewList');
+  reviewList.innerHTML = '';
+  reviewList.style.display = 'none';
+  document.getElementById('btnReviewToggle').textContent = '查看错题';
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('btnReviewToggle');
+  if (list.style.display === 'none') {
+    list.style.display = 'block';
+    btn.textContent = '收起错题';
+    list.innerHTML = '';
+    userAnswers.forEach((a, i) => {
+      const item = document.createElement('div');
+      item.className = 'review-item';
+      const statusClass = a.isCorrect ? 'ri-correct' : 'ri-wrong';
+      const statusText = a.isCorrect ? '正确' : '错误';
+      const yourAnswer = a.question.options[a.selectedIndex];
+      const correctAnswer = a.question.correctText;
+      item.innerHTML = '<div class="ri-q">' + (i+1) + '. ' + a.question.text + '</div>' +
+        '<span class="ri-status ' + statusClass + '">' + statusText + '</span>' +
+        (a.isCorrect ? '' : '<div class="ri-answer">你的答案：' + yourAnswer + '</div>') +
+        '<div class="ri-answer">正确答案：' + correctAnswer + '</div>';
+      list.appendChild(item);
+    });
+  } else {
+    list.style.display = 'none';
+    btn.textContent = '查看错题';
+  }
+}
+
+function retryQuiz() {
+  startQuiz();
+}
+</script>
+</body>
+</html>
